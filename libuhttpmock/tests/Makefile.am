@@ -29,6 +29,9 @@ server_SOURCES = server.c $(TEST_SRCS)
 TEST_PROGS += resolver
 resolver_SOURCES = resolver.c $(TEST_SRCS)
 
+TEST_PROGS += integration
+integration_SOURCES = integration.c $(TEST_SRCS)
+
 EXTRA_DIST += \
 	server_logging_trace_failure_method \
 	server_logging_trace_failure_unexpected-request \
