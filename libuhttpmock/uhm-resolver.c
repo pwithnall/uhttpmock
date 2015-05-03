@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * uhttpmock
- * Copyright (C) Philip Withnall 2013 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2013, 2015 <philip@tecnocode.co.uk>
  * Copyright (C) Collabora Ltd. 2009
  * 
  * uhttpmock is free software; you can redistribute it and/or
@@ -139,6 +139,12 @@ find_fake_services (UhmResolver *self, const char *name)
 	return rval;
 }
 
+static void
+fake_services_free (GList/*<owned GSrvTarget>*/ *services)
+{
+	g_list_free_full (services, (GDestroyNotify) g_object_unref);
+}
+
 static GList *
 find_fake_hosts (UhmResolver *self, const char *name)
 {
@@ -153,6 +159,12 @@ find_fake_hosts (UhmResolver *self, const char *name)
 	}
 
 	return rval;
+}
+
+static void
+fake_hosts_free (GList/*<owned GInetAddress>*/ *addrs)
+{
+	g_list_free_full (addrs, (GDestroyNotify) g_object_unref);
 }
 
 static GList *
@@ -172,34 +184,37 @@ uhm_resolver_lookup_by_name (GResolver *resolver, const gchar *hostname, GCancel
 static void
 uhm_resolver_lookup_by_name_async (GResolver *resolver, const gchar *hostname, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-	GList *addr;
+	GTask *task = NULL;  /* owned */
+	GList/*<owned GInetAddress>*/ *addr = NULL;  /* owned */
 	GError *error = NULL;
 
+	task = g_task_new (resolver, cancellable, callback, user_data);
+	g_task_set_source_tag (task, uhm_resolver_lookup_by_name_async);
+
 	addr = uhm_resolver_lookup_by_name (resolver, hostname, NULL, &error);
-	res = g_simple_async_result_new (G_OBJECT (resolver), callback, user_data, NULL);
 
 	if (addr != NULL) {
-		g_simple_async_result_set_op_res_gpointer (res, addr, NULL);
+		g_task_return_pointer (task, addr,
+		                       (GDestroyNotify) fake_hosts_free);
 	} else {
-		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
+		g_task_return_error (task, error);
 	}
 
-	g_simple_async_result_complete_in_idle (res);
-	g_object_unref (res);
+	g_object_unref (task);
 }
 
 static GList *
 uhm_resolver_lookup_by_name_finish (GResolver *resolver, GAsyncResult *result, GError **error)
 {
-	GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
+	GTask *task;  /* unowned */
 
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		return NULL;
-	}
+	g_return_val_if_fail (g_task_is_valid (result, resolver), NULL);
+	g_return_val_if_fail (g_task_get_source_tag (G_TASK (result)) ==
+	                      uhm_resolver_lookup_by_name_async, NULL);
 
-	return g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
+
+	return g_task_propagate_pointer (task, error);
 }
 
 static GList *
@@ -219,33 +234,38 @@ uhm_resolver_lookup_service (GResolver *resolver, const gchar *rrname, GCancella
 static void
 uhm_resolver_lookup_service_async (GResolver *resolver, const gchar *rrname, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	UhmResolver *self = UHM_RESOLVER (resolver);
-	GList *addr;
-	GSimpleAsyncResult *res;
+	GList/*<owned GSrvTarget>*/ *addrs = NULL;  /* owned */
+	GTask *task = NULL;  /* owned */
+	GError *error = NULL;
 
-	addr = find_fake_services (self, rrname);
-	res = g_simple_async_result_new (G_OBJECT (resolver), callback, user_data, uhm_resolver_lookup_service_async);
+	task = g_task_new (resolver, cancellable, callback, user_data);
+	g_task_set_source_tag (task, uhm_resolver_lookup_service_async);
 
-	if (addr != NULL) {
-		g_simple_async_result_set_op_res_gpointer (res, addr, NULL);
+	addrs = uhm_resolver_lookup_service (resolver, rrname,
+	                                     cancellable, &error);
+
+	if (addrs != NULL) {
+		g_task_return_pointer (task, addrs,
+		                       (GDestroyNotify) fake_services_free);
 	} else {
-		g_simple_async_result_set_error (res, G_RESOLVER_ERROR, G_RESOLVER_ERROR_NOT_FOUND, "No fake SRV record registered for ‘%s’.", rrname);
+		g_task_return_error (task, error);
 	}
 
-	g_simple_async_result_complete_in_idle (res);
-	g_object_unref (res);
+	g_object_unref (task);
 }
 
 static GList *
 uhm_resolver_lookup_service_finish (GResolver *resolver, GAsyncResult *result, GError **error)
 {
-	GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
+	GTask *task;  /* unowned */
 
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		return NULL;
-	}
+	g_return_val_if_fail (g_task_is_valid (result, resolver), NULL);
+	g_return_val_if_fail (g_task_get_source_tag (G_TASK (result)) ==
+	                      uhm_resolver_lookup_service_async, NULL);
 
-	return g_simple_async_result_get_op_res_gpointer (simple);
+	task = G_TASK (result);
+
+	return g_task_propagate_pointer (task, error);
 }
 
 /**

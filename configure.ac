@@ -31,7 +31,7 @@ PKG_PROG_PKG_CONFIG
 
 # Requirements
 GLIB_REQS=2.31.0
-GIO_REQS=2.17.3
+GIO_REQS=2.36.0
 SOUP_REQS=2.37.91
 
 # Before making a release, the UHM_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
