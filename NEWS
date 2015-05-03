@@ -2,12 +2,17 @@ Overview of changes from uhttpmock 0.3.0 to uhttpmock 0.4.0
 ===========================================================
 
 Major changes:
-
-API changes:
+ • Add optional support for libsoup 2.47.3’s new SoupServer API
+ • Fix some memory leaks
+ • Fix parsing of certain trace files
+ • Various build system updates
+ • Move home page from gitorious to https://gitlab.com/groups/uhttpmock
+ • Port from GAsyncResult to GTask, requiring a GIO dependency bump to 2.36.0
 
 Bugs fixed:
-
-Updated translations:
+ • Bug 748200 — typo in uhttpmock configure.ac
+ • https://github.com/pwithnall/uhttpmock/issues/2
+ • https://gitlab.com/uhttpmock/uhttpmock/issues/1
 
 
 Overview of changes from uhttpmock 0.2.0 to uhttpmock 0.3.0

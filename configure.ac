@@ -40,7 +40,7 @@ SOUP_REQS=2.37.91
 #  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
 #  3. If any interfaces have been added since the last public release, then increment age.
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
-UHM_LT_VERSION=1:0:1
+UHM_LT_VERSION=1:1:1
 AC_SUBST([UHM_LT_VERSION])
 
 UHM_VERSION_MAJOR=uhm_version_major
