@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * uhttpmock
- * Copyright (C) Philip Withnall 2013 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2013, 2015 <philip@tecnocode.co.uk>
  *
  * uhttpmock is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2205,4 +2205,141 @@ uhm_server_set_expected_domain_names (UhmServer *self, const gchar * const *doma
 	self->priv->expected_domain_names = new_domain_names;
 
 	apply_expected_domain_names (self);
+}
+
+static gboolean
+compare_messages_ignore_parameter_values_cb (UhmServer *server,
+                                             SoupMessage *expected_message,
+                                             SoupMessage *actual_message,
+                                             SoupClientContext *actual_client,
+                                             gpointer user_data)
+{
+	SoupURI *expected_uri, *actual_uri;
+	const gchar * const *ignore_query_param_values = user_data;
+	gboolean retval;
+	GHashTable/*<string, string>*/ *expected_params = NULL;  /* owned */
+	GHashTable/*<string, string>*/ *actual_params = NULL;  /* owned */
+	GHashTableIter iter;
+	const gchar *key, *expected_value;
+	guint i;
+
+	/* Compare method. */
+	if (g_strcmp0 (expected_message->method, actual_message->method) != 0) {
+		return FALSE;
+	}
+
+	/* Compare URIs, excluding query parameters. */
+	expected_uri = soup_message_get_uri (expected_message);
+	actual_uri = soup_message_get_uri (actual_message);
+
+	if (!parts_equal (expected_uri->user, actual_uri->user, FALSE) ||
+	    !parts_equal (expected_uri->password, actual_uri->password, FALSE) ||
+	    !parts_equal (expected_uri->path, actual_uri->path, FALSE) ||
+	    !parts_equal (expected_uri->fragment, actual_uri->fragment, FALSE)) {
+		return FALSE;
+	}
+
+	/* Compare query parameters, excluding the ignored ones. Note that we
+	 * expect the ignored parameters to exist, but their values may
+	 * differ. */
+	expected_params = soup_form_decode (expected_uri->query);
+	actual_params = soup_form_decode (actual_uri->query);
+
+	/* Check the presence of ignored parameters. */
+	for (i = 0; ignore_query_param_values[i] != NULL; i++) {
+		const gchar *name = ignore_query_param_values[i];
+
+		if (g_hash_table_contains (expected_params, name) &&
+		    !g_hash_table_contains (expected_params, name)) {
+			retval = FALSE;
+			goto done;
+		}
+
+		/* Remove them to simplify the comparison below. */
+		g_hash_table_remove (expected_params, name);
+		g_hash_table_remove (actual_params, name);
+	}
+
+	if (g_hash_table_size (actual_params) !=
+	    g_hash_table_size (expected_params)) {
+		retval = FALSE;
+		goto done;
+	}
+
+	g_hash_table_iter_init (&iter, expected_params);
+
+	while (g_hash_table_iter_next (&iter, (gpointer) &key,
+	                               (gpointer) &expected_value)) {
+		if (g_strcmp0 (expected_value,
+		               g_hash_table_lookup (actual_params, key)) != 0) {
+			retval = FALSE;
+			goto done;
+		}
+	}
+
+done:
+	g_hash_table_unref (actual_params);
+	g_hash_table_unref (expected_params);
+
+	return retval;
+}
+
+/**
+ * uhm_server_filter_ignore_parameter_values:
+ * @self: a #UhmServer
+ * @parameter_names: (array zero-terminated=1): %NULL-terminated array of
+ *    parameter names to ignore
+ *
+ * Install a #UhmServer:compare-messages filter function which will override the
+ * default comparison function to one which ignores differences in the values of
+ * the given query @parameter_names. The named parameters must still be present
+ * in the query, however.
+ *
+ * The filter will remain in place for the lifetime of the #UhmServer, until
+ * @uhm_server_compare_messages_remove_filter() is called with the returned
+ * filter ID.
+ *
+ * Note that currently only one of the installed comparison functions will be
+ * used. This may change in future.
+ *
+ * Returns: opaque filter ID used with
+ *    uhm_server_compare_messages_remove_filter() to remove the filter later
+ * Since: UNRELEASED
+ */
+gulong
+uhm_server_filter_ignore_parameter_values (UhmServer *self,
+                                           const gchar * const *parameter_names)
+{
+	g_return_val_if_fail (UHM_IS_SERVER (self), 0);
+	g_return_val_if_fail (parameter_names != NULL, 0);
+
+	/* FIXME: What are the semantics of multiple installed compare-messages
+	 * callbacks? Should they be aggregate-true? */
+	return g_signal_connect_data (self, "compare-messages",
+	                              (GCallback) compare_messages_ignore_parameter_values_cb,
+	                              g_strdupv ((gchar **) parameter_names),
+	                              (GClosureNotify) g_strfreev,
+	                              0  /* connect flags */);
+}
+
+/**
+ * uhm_server_compare_messages_remove_filter:
+ * @self: a #UhmServer
+ * @filter_id: filter ID returned by the filter addition function
+ *
+ * Remove a #UhmServer:compare-messages filter function installed previously by
+ * calling something like uhm_server_filter_ignore_parameter_values().
+ *
+ * It is an error to call this function with an invalid @filter_id.
+ *
+ * Since: UNRELEASED
+ */
+void
+uhm_server_compare_messages_remove_filter (UhmServer *self,
+                                           gulong filter_id)
+{
+	g_return_if_fail (UHM_IS_SERVER (self));
+	g_return_if_fail (filter_id != 0);
+
+	g_signal_handler_disconnect (self, filter_id);
 }

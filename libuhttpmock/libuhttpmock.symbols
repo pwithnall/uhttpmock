@@ -31,3 +31,5 @@ uhm_resolver_new
 uhm_resolver_reset
 uhm_resolver_add_A
 uhm_resolver_add_SRV
+uhm_server_filter_ignore_parameter_values
+uhm_server_compare_messages_remove_filter

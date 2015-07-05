@@ -128,6 +128,11 @@ GTlsCertificate *uhm_server_set_default_tls_certificate (UhmServer *self) G_GNUC
 
 void uhm_server_set_expected_domain_names (UhmServer *self, const gchar * const *domain_names);
 
+gulong uhm_server_filter_ignore_parameter_values (UhmServer *self,
+                                                  const gchar * const *parameter_names);
+void uhm_server_compare_messages_remove_filter (UhmServer *self,
+                                                gulong filter_id);
+
 G_END_DECLS
 
 #endif /* !UHM_SERVER_H */
