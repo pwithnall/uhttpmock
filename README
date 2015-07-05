@@ -43,8 +43,9 @@ libuhttpmock is licensed under the LGPL; see COPYING.LIB for more details.
 Bugs
 ====
 
-Bug reports and (git formatted) patches should be e-mailed to one of the
-addresses listed in the ‘Contact’ section below. Thank you!
+Bug reports and merge requests should be submitted on GitLab:
+ • https://gitlab.com/uhttpmock/uhttpmock/issues/new
+ • https://gitlab.com/uhttpmock/uhttpmock/merge_requests/new
 
 Contact
 =======
