@@ -2277,6 +2277,8 @@ compare_messages_ignore_parameter_values_cb (UhmServer *server,
 		}
 	}
 
+	retval = TRUE;
+
 done:
 	g_hash_table_unref (actual_params);
 	g_hash_table_unref (expected_params);
