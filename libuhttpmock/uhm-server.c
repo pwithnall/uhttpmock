@@ -2306,7 +2306,7 @@ done:
  *
  * Returns: opaque filter ID used with
  *    uhm_server_compare_messages_remove_filter() to remove the filter later
- * Since: UNRELEASED
+ * Since: 0.5.0
  */
 gulong
 uhm_server_filter_ignore_parameter_values (UhmServer *self,
@@ -2334,7 +2334,7 @@ uhm_server_filter_ignore_parameter_values (UhmServer *self,
  *
  * It is an error to call this function with an invalid @filter_id.
  *
- * Since: UNRELEASED
+ * Since: 0.5.0
  */
 void
 uhm_server_compare_messages_remove_filter (UhmServer *self,

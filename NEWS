@@ -2,12 +2,14 @@ Overview of changes from uhttpmock 0.4.0 to uhttpmock 0.5.0
 ===========================================================
 
 Major changes:
+ • Minor documentation updates
 
 API changes:
+ • Add uhm_server_filter_ignore_parameter_values()
+ • Add uhm_server_compare_messages_remove_filter()
 
 Bugs fixed:
-
-Updated translations:
+ • https://gitlab.com/uhttpmock/uhttpmock/issues/2
 
 
 Overview of changes from uhttpmock 0.3.0 to uhttpmock 0.4.0
