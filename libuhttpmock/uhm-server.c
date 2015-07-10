@@ -964,6 +964,9 @@ load_file_stream (GFile *trace_file, GCancellable *cancellable, GError **error)
 
 	base_stream = g_file_read (trace_file, cancellable, error);
 
+	if (base_stream == NULL)
+		return NULL;
+
 	data_stream = g_data_input_stream_new (G_INPUT_STREAM (base_stream));
 	g_data_input_stream_set_byte_order (data_stream, G_DATA_STREAM_BYTE_ORDER_LITTLE_ENDIAN);
 	g_data_input_stream_set_newline_type (data_stream, G_DATA_STREAM_NEWLINE_TYPE_LF);
