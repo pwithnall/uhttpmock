@@ -105,7 +105,7 @@ libuhttpmock_Uhm_@UHM_API_VERSION_U@_gir_EXPORT_PACKAGES = libuhttpmock
 libuhttpmock_Uhm_@UHM_API_VERSION_U@_gir_SCANNERFLAGS = \
 	--nsversion=@UHM_API_VERSION@ \
 	--symbol-prefix=uhm \
-	--c-include="libuhttpmock/uhm.h"
+	--c-include="uhttpmock/uhm.h"
 
 INTROSPECTION_GIRS += libuhttpmock/Uhm-@UHM_API_VERSION@.gir
 
