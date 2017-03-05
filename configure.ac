@@ -2,8 +2,8 @@ AC_PREREQ(2.65)
 
 # Release version
 m4_define(uhm_version_major, 0)
-m4_define(uhm_version_minor, 6)
-m4_define(uhm_version_micro, 0)
+m4_define(uhm_version_minor, 5)
+m4_define(uhm_version_micro, 1)
 
 # API version
 m4_define(uhm_api_version_major, 0)
@@ -40,7 +40,7 @@ SOUP_REQS=2.37.91
 #  2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
 #  3. If any interfaces have been added since the last public release, then increment age.
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
-UHM_LT_VERSION=2:0:2
+UHM_LT_VERSION=2:1:2
 AC_SUBST([UHM_LT_VERSION])
 
 UHM_VERSION_MAJOR=uhm_version_major
