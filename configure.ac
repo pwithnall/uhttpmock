@@ -2,8 +2,8 @@ AC_PREREQ(2.65)
 
 # Release version
 m4_define(uhm_version_major, 0)
-m4_define(uhm_version_minor, 5)
-m4_define(uhm_version_micro, 1)
+m4_define(uhm_version_minor, 6)
+m4_define(uhm_version_micro, 0)
 
 # API version
 m4_define(uhm_api_version_major, 0)
