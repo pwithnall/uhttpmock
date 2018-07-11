@@ -76,15 +76,13 @@ struct _UhmResolverPrivate {
 	GList *fake_SRV;
 };
 
-G_DEFINE_TYPE (UhmResolver, uhm_resolver, G_TYPE_RESOLVER)
+G_DEFINE_TYPE_WITH_PRIVATE (UhmResolver, uhm_resolver, G_TYPE_RESOLVER)
 
 static void
 uhm_resolver_class_init (UhmResolverClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GResolverClass *resolver_class = G_RESOLVER_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (UhmResolverPrivate));
 
 	gobject_class->finalize = uhm_resolver_finalize;
 
@@ -99,7 +97,7 @@ uhm_resolver_class_init (UhmResolverClass *klass)
 static void
 uhm_resolver_init (UhmResolver *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, UHM_TYPE_RESOLVER, UhmResolverPrivate);
+	self->priv = uhm_resolver_get_instance_private (self);
 }
 
 static void

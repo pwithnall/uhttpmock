@@ -152,14 +152,12 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (UhmServer, uhm_server, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (UhmServer, uhm_server, G_TYPE_OBJECT)
 
 static void
 uhm_server_class_init (UhmServerClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (UhmServerPrivate));
 
 	gobject_class->get_property = uhm_server_get_property;
 	gobject_class->set_property = uhm_server_set_property;
@@ -335,7 +333,7 @@ uhm_server_class_init (UhmServerClass *klass)
 static void
 uhm_server_init (UhmServer *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, UHM_TYPE_SERVER, UhmServerPrivate);
+	self->priv = uhm_server_get_instance_private (self);
 }
 
 static void
