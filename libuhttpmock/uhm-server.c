@@ -2287,6 +2287,14 @@ done:
 	return retval;
 }
 
+static void
+parameter_names_closure_notify (gpointer  data,
+                                GClosure *closure)
+{
+	gchar **parameter_names = data;
+	g_strfreev (parameter_names);
+}
+
 /**
  * uhm_server_filter_ignore_parameter_values:
  * @self: a #UhmServer
@@ -2321,7 +2329,7 @@ uhm_server_filter_ignore_parameter_values (UhmServer *self,
 	return g_signal_connect_data (self, "compare-messages",
 	                              (GCallback) compare_messages_ignore_parameter_values_cb,
 	                              g_strdupv ((gchar **) parameter_names),
-	                              (GClosureNotify) g_strfreev,
+	                              parameter_names_closure_notify,
 	                              0  /* connect flags */);
 }
 
