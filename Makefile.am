@@ -142,7 +142,7 @@ endif
 endif
 
 # Code coverage
-@CODE_COVERAGE_RULES@
+include $(top_srcdir)/aminclude_static.am
 CODE_COVERAGE_DIRECTORY = $(top_builddir)/libuhttpmock
 CODE_COVERAGE_LCOV_OPTIONS = --base-directory $(abs_top_srcdir)
 
