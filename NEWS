@@ -1,13 +1,10 @@
-Overview of changes from uhttpmock 0.5.1 to uhttpmock 0.6.0
+Overview of changes from uhttpmock 0.5.1 to uhttpmock 0.5.2
 ===========================================================
 
-Major changes:
-
-API changes:
-
 Bugs fixed:
-
-Updated translations:
+ • Add GitLab CI
+ • Fix autoconf-archive usage due to them breaking API
+ • Bump GObject dependency to 2.38 to use newer private data API
 
 
 Overview of changes from uhttpmock 0.5.0 to uhttpmock 0.5.1
