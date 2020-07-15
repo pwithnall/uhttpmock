@@ -1391,7 +1391,7 @@ uhm_server_run (UhmServer *self)
 	g_main_context_push_thread_default (priv->server_context);
 
 	priv->server_main_loop = g_main_loop_new (priv->server_context, FALSE);
-	soup_server_listen_local (priv->server, 0, SOUP_SERVER_LISTEN_HTTPS,
+	soup_server_listen_local (priv->server, 0, (priv->tls_certificate != NULL) ? SOUP_SERVER_LISTEN_HTTPS : 0,
 	                          &error);
 	g_assert_no_error (error);  /* binding to localhost should never really fail */
 
