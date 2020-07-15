@@ -30,8 +30,10 @@
  * where each request is expected by the server (in order). On receiving an expected request, the mock server will return the relevant response and move
  * to expecting the next request in the trace file.
  *
- * The mock server currently only operates on a single network interface, on HTTPS only. This may change in future. A dummy TLS certificate is used
- * to authenticate the server. This certificate is not signed by a CA, so the #SoupSession:ssl-strict property must be set to %FALSE in client code
+ * The mock server currently only operates on a single network interface, on HTTPS (if #UhmServer:tls-certificate is set) or HTTP otherwise.
+ * This may change in future. Your own TLS certificate can be provided to authenticate the server using #UhmServer:tls-certificate, or a dummy
+ * TLS certificate can be used by calling uhm_server_set_default_tls_certificate(). This certificate is not signed by a CA, so the
+ * #SoupSession:ssl-strict property must be set to %FALSE in client code
  * during (and only during!) testing.
  *
  * The server can operate in three modes: logging, testing, and comparing. These are set by #UhmServer:enable-logging and #UhmServer:enable-online.
