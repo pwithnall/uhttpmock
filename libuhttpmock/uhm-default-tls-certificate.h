@@ -1,6 +1,7 @@
 /* Manually constructed by concatenating and quoting cert.pem and key.pem.
  * The PEM files were generated using:
- *     openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -nodes
+ *     openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -nodes \
+ *         -subj "/C=GB/L=Default City/O=uhttpmock/CN=uhttpmock"
  */
 static const gchar *uhm_default_tls_certificate =
 	"-----BEGIN CERTIFICATE-----\n"
