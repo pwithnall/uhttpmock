@@ -1,3 +1,12 @@
+Overview of changes from uhttpmock 0.5.2 to uhttpmock 0.5.3
+===========================================================
+
+Bugs fixed:
+ • Add an integration tutorial (by Rasmus Thomsen) (#3)
+ • Only specify SOUP_SERVER_LISTEN_HTTPS if TLS is enabled (!9)
+ • Expand TLS certificate instructions (!10)
+
+
 Overview of changes from uhttpmock 0.5.1 to uhttpmock 0.5.2
 ===========================================================
 
