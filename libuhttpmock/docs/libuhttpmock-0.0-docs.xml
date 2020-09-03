@@ -48,7 +48,7 @@ test_mock (void)
 	guint http_status_code = 0;
 
 	/*
-	 * Start recording the trace if in online mode, otherwise read trace to comapre
+	 * Start recording the trace if in online mode, otherwise read trace to compare
 	 * Replace "testname" with the name of the test. This needs to be unique among
 	 * your test suite!
 	 */
@@ -182,7 +182,7 @@ gcc -o uhttpsample uhttpsample.c $(pkg-config --cflags --libs gio-2.0 glib-2.0 l
 					<para>
 						<emphasis role="strong">Compare</emphasis>: If you want to make sure the server still
 						behaves as you expect (sends you the expected responses), you can disable logging and
-						enable the online mode. libuhttpmock will then query the actual online server, but wont
+						enable the online mode. libuhttpmock will then query the actual online server, but won't
 						overwrite the trace file and will error out if any response from the server has changed.
 					</para>
 				</listitem>
